@@ -3,6 +3,7 @@ package com.lixue.aibei.slidingtitlebarlib;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
@@ -35,13 +36,16 @@ public class SlidingTabScript extends HorizontalScrollView {
     /**滑动块**/
     private Drawable slidingBlock;
 
-    private int tabCount;
-    private int mWidth;//SlidingTabScript的宽度
+    private float currentPositionOffset;	//当前位置偏移量
+    private int lastScrollX;//上一次的位置
+    private int lastOffset;
+    private boolean start;
 
     private ViewPager viewPager;//viewPager
     private int currentIndex;//当前位置
     private ViewGroup tabsLayout;//标题项布局
     private List<View> tabsView;//标题项集合
+    private ViewPager.OnPageChangeListener onPageChangeListener;//页面改变监听器
 
     public SlidingTabScript(Context context) {
         super(context);
@@ -107,18 +111,14 @@ public class SlidingTabScript extends HorizontalScrollView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         /**如果tabs充满屏幕的宽，每个tab的宽度要平均分配**/
-//        int Tabwidth = getMeasuredWidth();
-//        Log.i(TAG,"Tabwidth:" + Tabwidth);
-//        int sigleTabWidth = Tabwidth/tabsLayout.getChildCount();
-//        Log.i(TAG, "sigleTabWidth:" + sigleTabWidth);
-        if (allowWidthFull && tabsLayout != null){
-            for (int i = 0 ;i < getChildCount();i ++){
-                ViewGroup.LayoutParams lp = getChildAt(i).getLayoutParams();
-                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                getChildAt(i).setLayoutParams(lp);
-            }
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        if (allowWidthFull && tabsLayout != null){
+//            for (int i = 0 ;i < getChildCount();i ++){
+//                ViewGroup.LayoutParams lp = getChildAt(i).getLayoutParams();
+//                lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+//                getChildAt(i).setLayoutParams(lp);
+//            }
+//        }
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (!allowWidthFull) return;
         ViewGroup tabsLayout = getTabsLayout();
@@ -141,11 +141,6 @@ public class SlidingTabScript extends HorizontalScrollView {
 
         ajustChildWidthWithParent(tabsView,getMeasuredWidth()-tabsLayout.getPaddingLeft()-tabsLayout.getPaddingRight(),widthMeasureSpec,heightMeasureSpec);
         super.onMeasure(widthMeasureSpec,heightMeasureSpec);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
     }
 
     /**重新测量标题布局（tabs）位置**/
@@ -185,6 +180,7 @@ public class SlidingTabScript extends HorizontalScrollView {
         /**修改宽度小于新的平均宽度的view**/
         for(View view : tabsView){
             if(view.getMeasuredWidth() < avgWidth){
+                Log.i(TAG,"avgWidth : " + avgWidth +", 子view的宽度 : " + view.getMeasuredWidth());
                 LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
                 layoutParams.width = avgWidth;
                 view.setLayoutParams(layoutParams);
@@ -203,6 +199,43 @@ public class SlidingTabScript extends HorizontalScrollView {
 //            lp.width = singleWidth;
 //            view.setLayoutParams(lp);
 //        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (disableViewPager) return;
+        if (tabsLayout != null && tabsLayout.getChildCount() > 0 && slidingBlock != null){
+            ViewGroup tabsLayout = getTabsLayout();
+            View currentView = tabsLayout.getChildAt(currentIndex);
+            if (currentView != null){
+                float left = currentView.getLeft();
+                float right = currentView.getRight();
+                if (currentPositionOffset > 0f && currentIndex < tabsLayout.getChildCount() - 1) {
+                    View nextTab = tabsLayout.getChildAt(currentIndex + 1);
+                    if(nextTab != null){
+                        final float nextTabLeft = nextTab.getLeft();
+                        final float nextTabRight = nextTab.getRight();
+                        left = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * left);
+                        right = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * right);
+                    }
+                }
+                // 不拉伸
+                if(disableTensileSlidingBlock){
+                    int center = (int) (left + (right-left)/2);
+                    left = center - slidingBlock.getIntrinsicWidth()/2;
+                    right = center + slidingBlock.getIntrinsicWidth()/2;
+                }
+                slidingBlock.setBounds((int) left, getHeight() - slidingBlock.getIntrinsicHeight(), (int) right, getHeight());
+                slidingBlock.draw(canvas);
+//                invalidate();
+            }
+        }
     }
 
     /**获取tabs布局，例如《排行，精品，分类，管理》的tabs布局**/
@@ -245,5 +278,120 @@ public class SlidingTabScript extends HorizontalScrollView {
             }
         }
         return listStr;
+    }
+
+    /**设置ViewPager**/
+    public void setViewPager(final ViewPager viewPager){
+        if (disableViewPager) return;
+        this.viewPager = viewPager;
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int positon, float positionOffset, int positionOffsetPixels) {
+                ViewGroup tabsLayout = getTabsLayout();
+                if(positon < tabsLayout.getChildCount()){
+                    View view = tabsLayout.getChildAt(positon);
+                    if(view != null){
+                        currentIndex = positon;
+                        currentPositionOffset = positionOffset;
+                        scrollToChild(positon, (int) (positionOffset * (view.getWidth() + getLeftMargin(view) + getRightMargin(view))));
+                        invalidate();
+                    }
+                }
+                if(onPageChangeListener != null){
+                    onPageChangeListener.onPageScrolled(positon, positionOffset, positionOffsetPixels);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                selectTab(position);
+                if (onPageChangeListener != null){
+                    onPageChangeListener.onPageSelected(position);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+    /**指定的tab被选中**/
+    private void selectTab(int position){
+        ViewGroup tabsLayout = getTabsLayout();
+        if (position > -1 && tabsLayout != null && position < tabsLayout.getChildCount()){
+            for (int w =0 ;w < tabsLayout.getChildCount();w ++){
+                View thisTab = tabsLayout.getChildAt(w);
+                thisTab.setSelected(position==w);
+            }
+
+        }
+//        currentIndex = position;
+//        viewPager.setCurrentItem(position);
+    }
+
+    private int getLeftMargin(View view){
+        if (view.getLayoutParams() instanceof MarginLayoutParams){
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+            return  lp.leftMargin;
+        }
+        return 0;
+    }
+
+    private int getRightMargin(View view){
+        if (view.getLayoutParams() instanceof MarginLayoutParams){
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+            return  lp.rightMargin;
+        }
+        return 0;
+    }
+
+    /**从当前位置滚动到偏移量的位置**/
+    private void scrollToChild(int position,int offset){
+        ViewGroup tabsLayout = getTabsLayout();
+        if(tabsLayout != null && tabsLayout.getChildCount() > 0 && position < tabsLayout.getChildCount()){
+            View view = tabsLayout.getChildAt(position);
+            if(view != null){
+                //计算新的X坐标
+                int newScrollX = view.getLeft() + offset - getLeftMargin(view);
+                if (position > 0 || offset > 0) {
+                    newScrollX -= getWidth()/2 - getOffset(view.getWidth())/2;
+                }
+
+                //如果同上次X坐标不一样就执行滚动
+                if (newScrollX != lastScrollX) {
+                    lastScrollX = newScrollX;
+                    scrollTo(newScrollX, 0);
+                }
+            }
+        }
+    }
+    /**
+     * 获取偏移量
+     */
+    private int getOffset(int newOffset){
+        if(lastOffset < newOffset){
+            if(start){
+                lastOffset += 1;
+                return lastOffset;
+            }else{
+                start = true;
+                lastOffset += 1;
+                return lastOffset;
+            }
+        }if(lastOffset > newOffset){
+            if(start){
+                lastOffset -= 1;
+                return lastOffset;
+            }else{
+                start = true;
+                lastOffset -= 1;
+                return lastOffset;
+            }
+        }else{
+            start = true;
+            lastOffset = newOffset;
+            return lastOffset;
+        }
     }
 }

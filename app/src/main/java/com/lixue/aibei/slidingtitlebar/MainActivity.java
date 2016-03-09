@@ -47,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
         List<String> nameStr = slidingTabScript.getTabName();
         viewPager.setAdapter(new ViewPagerAdapter(MainActivity.this,nameStr));
         viewPager.setCurrentItem(0);
-//        slidingTabScript.setViewPager(viewPager);
-
+        slidingTabScript.setViewPager(viewPager);
     }
 
     @Override
