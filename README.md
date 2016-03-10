@@ -20,9 +20,10 @@ Features
       compile 'me.xiaopan:sketch:2.0.0'
 
   2、在布局中引用slidingtitlebarlib
-     ![](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/1.png)
+     ![](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/1.jpg)
 
    3、设置viewpager
+
       ViewPager moreViewPager = (ViewPager) findViewById(R.id.viewPager);
       moreViewPager.setAdapter(...);
       pagerSlidingTabStrip.setViewPager(moreViewPager);
