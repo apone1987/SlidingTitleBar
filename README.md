@@ -2,7 +2,7 @@
 SlidingTitleBar
 ===================================
   一款用来滑动的导航条组件，主要就是用于配合ViewPager实现滑动的导航条，以容纳无限多的Tab\<h1\><br />
- ![](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/vedio.mp4)
+ ![](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/截图.png)
 
 Features
 -----------------------------------
