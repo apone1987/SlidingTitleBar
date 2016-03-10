@@ -20,7 +20,7 @@ Features
       compile 'me.xiaopan:sketch:2.0.0'
 
   2、在布局中引用slidingtitlebarlib
-      <com.lixue.aibei.slidingtitlebarlib.SlidingTabScript
+     ` <com.lixue.aibei.slidingtitlebarlib.SlidingTabScript
           android:id="@+id/slidingTabScript"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -37,12 +37,12 @@ Features
               <TextView style="@style/text_slidingTabTitle" android:text="分类"></TextView>
               <TextView style="@style/text_slidingTabTitle" android:text="管理"></TextView>
           </LinearLayout>
-      </com.lixue.aibei.slidingtitlebarlib.SlidingTabScript>
+      </com.lixue.aibei.slidingtitlebarlib.SlidingTabScript>`
 
    3、设置viewpager
-       ViewPager moreViewPager = (ViewPager) findViewById(R.id.viewPager);
+       `ViewPager moreViewPager = (ViewPager) findViewById(R.id.viewPager);
        moreViewPager.setAdapter(...);
-       pagerSlidingTabStrip.setViewPager(moreViewPager);
+       pagerSlidingTabStrip.setViewPager(moreViewPager);`
 
 
 ### 注意!!!
