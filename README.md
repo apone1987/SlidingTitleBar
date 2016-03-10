@@ -3,6 +3,8 @@ SlidingTitleBar
 ===================================
   一款用来滑动的导航条组件，主要就是用于配合ViewPager实现滑动的导航条，以容纳无限多的Tab\<h1\><br />
  ![属性](https://github.com/heavenxue/SlidingTitleBar/tree/master/docs/device-2016-03-10-154106.mp4 "属性")
+ ![](http://www.baidu.com/img/bdlogo.gif)
+
 Features
 -----------------------------------
   有4个属性控制这个组件，分别为\<h2\><br />
@@ -46,7 +48,7 @@ Features
 
 ###只是显示图片
 ![github](https://github.com/heavenxue/SlidingTitleBar/tree/master/docs/attr.png "github")
-![](http://www.baidu.com/img/bdlogo.gif)
+
 ###想点击某个图片进入一个网页,比如我想点击github的icorn然后再进入www.github.com
 [![image]](http://www.github.com/)
 [image]: http://github.com/github.png "github"
