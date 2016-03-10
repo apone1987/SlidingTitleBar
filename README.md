@@ -2,14 +2,19 @@
 SlidingTitleBar
 ===================================
   一款用来滑动的导航条组件，主要就是用于配合ViewPager实现滑动的导航条，以容纳无限多的Tab\<h1\><br />
-
+ ![属性](https://github.com/heavenxue/SlidingTitleBar/tree/master/docs/device-2016-03-10-154106.mp4 "属性")
 Features
 -----------------------------------
   有4个属性控制这个组件，分别为\<h2\><br />
-  你只要在标题下面输入------即可
+  ![属性](https://github.com/heavenxue/SlidingTitleBar/tree/master/docs/attr.png "属性")
+
+      allowWidthFull 是否充满屏幕
+      disableViewPager 是否禁用viewPager
+      disableTensileSlidingBlock 是否禁用拉伸滑动块
+      slidingBlock 滑动块
   
-### 小标题
-  小标题类似html的\<h3\><br />
+### 使用
+  在eclipse和AndroidStudion中都可以使用\<h3\><br />
   小标题的格式如下 ### 小标题<br />
   注意#和标题字符中间要有空格
 
