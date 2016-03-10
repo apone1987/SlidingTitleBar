@@ -8,8 +8,8 @@ SlidingTitleBar
 Features
 -----------------------------------
   有4个属性控制这个组件，分别为\<h2\><br />
-  ![属性](https://github.com/heavenxue/SlidingTitleBar/tree/master/docs/attr.png "属性")
-  ![属性](https://github.com/heavenxue/SlidingTitleBar/tree/master/docs/截图.png "属性")
+  ![属性](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/attr.png "属性")
+  ![属性](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/截图.png "属性")
 
       allowWidthFull 是否充满屏幕
       disableViewPager 是否禁用viewPager
