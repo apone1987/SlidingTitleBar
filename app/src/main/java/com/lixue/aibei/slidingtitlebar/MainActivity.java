@@ -6,9 +6,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.lixue.aibei.slidingtitlebarlib.SlidingTabScript;
 
@@ -44,31 +48,43 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData(){
 //        int length = slidingTabScript.getTabCount();
+        //增加一个标题
+        slidingTabScript.setTabViewFactory(new SlidingTabScript.TabViewFactory() {
+            @Override
+            public void addTabs(ViewGroup parent, int defaultPosition) {
+                TextView textView = new TextView(MainActivity.this);
+                textView.setText("我的");
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.leftMargin = 16;
+                lp.rightMargin = 16;
+                textView.setLayoutParams(lp);
+//                textView.setPadding(0, 12, 0, 14);
+                textView.setGravity(Gravity.CENTER);
+                textView.setBackgroundResource(R.drawable.selector_slide_title);
+//                textView.setBackgroundDrawable(getResources().getDrawable(R.drawable.selector_slide_title));
+                textView.setTextColor(getResources().getColor(R.color.selector_slide_title));
+                textView.setTextSize(14);
+                parent.addView(textView);
+            }
+        });
         List<String> nameStr = slidingTabScript.getTabName();
-        viewPager.setAdapter(new ViewPagerAdapter(MainActivity.this,nameStr));
+        viewPager.setAdapter(new ViewPagerAdapter(MainActivity.this, nameStr));
         viewPager.setCurrentItem(0);
         slidingTabScript.setViewPager(viewPager);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

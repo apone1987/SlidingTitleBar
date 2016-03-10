@@ -46,6 +46,7 @@ public class SlidingTabScript extends HorizontalScrollView {
     private ViewGroup tabsLayout;//标题项布局
     private List<View> tabsView;//标题项集合
     private ViewPager.OnPageChangeListener onPageChangeListener;//页面改变监听器
+    private TabViewFactory tabViewFactory;//tabview生成器
 
     public SlidingTabScript(Context context) {
         super(context);
@@ -293,7 +294,24 @@ public class SlidingTabScript extends HorizontalScrollView {
                     if(view != null){
                         currentIndex = positon;
                         currentPositionOffset = positionOffset;
-                        scrollToChild(positon, (int) (positionOffset * (view.getWidth() + getLeftMargin(view) + getRightMargin(view))));
+                        Log.i(TAG,"position:" + positon);
+                        /**从当前位置滚动到偏移量的位置**/
+                        int offset = (int)positionOffset * (view.getWidth() + getLeftMargin(view) + getRightMargin(view));
+                        Log.i(TAG,"offset :" + offset);
+                        //计算新的X坐标
+                        int newScrollX = view.getLeft() + offset - getLeftMargin(view);
+                        Log.i(TAG,"newScrollX :" + newScrollX);
+                        if (positon > 0 || offset > 0) {
+                            newScrollX -= getWidth()/2 - getOffset(view.getWidth())/2;
+                            Log.i(TAG,"getWidth()/2:"+getWidth()/2 + ",getoffset()/2:"+ getOffset(view.getWidth())/2 + ",newScrollx:" + newScrollX);
+                        }
+
+                        //如果同上次X坐标不一样就执行滚动
+                        if (newScrollX != lastScrollX) {
+                            lastScrollX = newScrollX;
+                            Log.i(TAG,"newScrollX : " + newScrollX +", lastScrollX :" + lastScrollX);
+                            scrollTo(newScrollX, 0);
+                        }
                         invalidate();
                     }
                 }
@@ -312,9 +330,14 @@ public class SlidingTabScript extends HorizontalScrollView {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                if(onPageChangeListener != null){
+                    onPageChangeListener.onPageScrollStateChanged(state);
+                }
             }
         });
+        //当view确定自身已经不再适合现有的区域时，该view本身调用这个方法要求parent view重新调用他的onMeasure onLayout来对重新设置自己位置。
+        //特别的当view的layoutparameter发生改变，并且它的值还没能应用到view上，这时候适合调用这个方法。
+        requestLayout();
     }
     /**指定的tab被选中**/
     private void selectTab(int position){
@@ -346,26 +369,7 @@ public class SlidingTabScript extends HorizontalScrollView {
         return 0;
     }
 
-    /**从当前位置滚动到偏移量的位置**/
-    private void scrollToChild(int position,int offset){
-        ViewGroup tabsLayout = getTabsLayout();
-        if(tabsLayout != null && tabsLayout.getChildCount() > 0 && position < tabsLayout.getChildCount()){
-            View view = tabsLayout.getChildAt(position);
-            if(view != null){
-                //计算新的X坐标
-                int newScrollX = view.getLeft() + offset - getLeftMargin(view);
-                if (position > 0 || offset > 0) {
-                    newScrollX -= getWidth()/2 - getOffset(view.getWidth())/2;
-                }
 
-                //如果同上次X坐标不一样就执行滚动
-                if (newScrollX != lastScrollX) {
-                    lastScrollX = newScrollX;
-                    scrollTo(newScrollX, 0);
-                }
-            }
-        }
-    }
     /**
      * 获取偏移量
      */
@@ -393,5 +397,39 @@ public class SlidingTabScript extends HorizontalScrollView {
             lastOffset = newOffset;
             return lastOffset;
         }
+    }
+
+    /**
+     * 设置不使用ViewPager
+     * @param disableViewPager 不使用ViewPager
+     */
+    public void setDisableViewPager(boolean disableViewPager) {
+        this.disableViewPager = disableViewPager;
+        if(viewPager != null){
+            viewPager.setOnPageChangeListener(onPageChangeListener);
+            viewPager = null;
+        }
+        requestLayout();
+    }
+
+    /**
+     * 设置TabView生成器
+     * @param tabViewFactory
+     */
+    public void setTabViewFactory(TabViewFactory tabViewFactory) {
+        this.tabViewFactory = tabViewFactory;
+        tabViewFactory.addTabs(getTabsLayout(), viewPager!=null?viewPager.getCurrentItem():0);
+    }
+
+    /**
+     * TabView生成器
+     */
+    public interface TabViewFactory{
+        /**
+         * 添加tab
+         * @param parent
+         * @param defaultPosition
+         */
+        public void addTabs(ViewGroup parent, int defaultPosition);
     }
 }
