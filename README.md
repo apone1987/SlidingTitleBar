@@ -20,24 +20,24 @@ Features
       compile 'me.xiaopan:sketch:2.0.0'
 
   2、在布局中引用slidingtitlebarlib
-    <com.lixue.aibei.slidingtitlebarlib.SlidingTabScript
-          android:id="@+id/slidingTabScript"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:allowWidthFull = "true"
-          app:slidingBlock = "@drawable/image_sliding_block"
-          app:disableViewPager = "false"
-          app:disableTensileSlidingBlock = "false"
-          android:fillViewport="false">
-          <LinearLayout
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-              <TextView style="@style/text_slidingTabTitle" android:text="排行"></TextView>
-              <TextView style="@style/text_slidingTabTitle" android:text="精品"></TextView>
-              <TextView style="@style/text_slidingTabTitle" android:text="分类"></TextView>
-              <TextView style="@style/text_slidingTabTitle" android:text="管理"></TextView>
-          </LinearLayout>
-    </com.lixue.aibei.slidingtitlebarlib.SlidingTabScript>`
+      <com.lixue.aibei.slidingtitlebarlib.SlidingTabScript
+                android:id="@+id/slidingTabScript"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:allowWidthFull = "true"
+                app:slidingBlock = "@drawable/image_sliding_block"
+                app:disableViewPager = "false"
+                app:disableTensileSlidingBlock = "false"
+                android:fillViewport="false">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView style="@style/text_slidingTabTitle" android:text="排行"></TextView>
+                    <TextView style="@style/text_slidingTabTitle" android:text="精品"></TextView>
+                    <TextView style="@style/text_slidingTabTitle" android:text="分类"></TextView>
+                    <TextView style="@style/text_slidingTabTitle" android:text="管理"></TextView>
+                </LinearLayout>
+          </com.lixue.aibei.slidingtitlebarlib.SlidingTabScript>
 
    3、设置viewpager
     ViewPager moreViewPager = (ViewPager) findViewById(R.id.viewPager);
