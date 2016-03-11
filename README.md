@@ -17,7 +17,7 @@ Features
 ### 使用
   在eclipse和AndroidStudion中都可以使用<br />
   1、引用
-      compile 'me.xiaopan:sketch:2.0.0'
+      compile 'com.lixue.aibei:slidingtitlebarlib:1.0'
 
   2、在布局中引用slidingtitlebarlib
      ![](https://github.com/heavenxue/SlidingTitleBar/raw/master/docs/1.jpg)
