@@ -285,7 +285,7 @@ public class SlidingTabScript extends HorizontalScrollView {
     public void setViewPager(final ViewPager viewPager){
         if (disableViewPager) return;
         this.viewPager = viewPager;
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int positon, float positionOffset, int positionOffsetPixels) {
                 ViewGroup tabsLayout = getTabsLayout();

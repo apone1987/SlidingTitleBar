@@ -24,6 +24,11 @@
             <TextView style="@style/text_slidingTabTitle" android:text="精品"></TextView>
             <TextView style="@style/text_slidingTabTitle" android:text="分类"></TextView>
             <TextView style="@style/text_slidingTabTitle" android:text="管理"></TextView>
+            <TextView style="@style/text_slidingTabTitle" android:text="管理地方收拾是的"></TextView>
+            <TextView style="@style/text_slidingTabTitle" android:text="管理是的的"></TextView>
+            <TextView style="@style/text_slidingTabTitle" android:text="管理地方"></TextView>
+            <TextView style="@style/text_slidingTabTitle" android:text="管理的"></TextView>
+
         </LinearLayout>
     </com.lixue.aibei.slidingtitlebarlib.SlidingTabScript>
     <android.support.v4.view.ViewPager
